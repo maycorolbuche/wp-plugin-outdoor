@@ -1,0 +1,19 @@
+.outdoor-table .inactive th,
+.outdoor-table .inactive td {
+    color: #AAA;
+}
+
+/*.outdoor-table .column-order{
+    text-align: right;
+}*/
+
+.outd_row_fields_edit {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.outd_row_fields_edit input{
+    margin-bottom: 2px !important;
+    margin-right: 2px !important;
+}
