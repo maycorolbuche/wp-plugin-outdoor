@@ -7,15 +7,18 @@ if (!defined('ABSPATH')) {
 require_once OUTD_DIR . 'actions.php';
 require_once OUTD_DIR . 'table.php';
 
+add_action('init', 'outd_register_shortcodes');
+add_action('admin_init', 'outd_register_settings');
+add_action('admin_enqueue_scripts', 'outd_load_scripts');
+add_action('admin_menu', 'outd_custom_menu');
+
 function outd_load_scripts()
 {
     wp_enqueue_media();
     wp_enqueue_style('outd-style', OUTD_URL_CSS . 'style.css', array(), filemtime(OUTD_DIR_CSS . 'style.css'), 'all');
     wp_enqueue_script('outd-scripts', OUTD_URL_JS . 'scripts.js', array(), filemtime(OUTD_DIR_JS . 'scripts.js'), true);
 }
-add_action('admin_enqueue_scripts', 'outd_load_scripts');
 
-add_action('admin_menu', 'outd_custom_menu');
 function outd_custom_menu()
 {
     global $outd_sample_page;
@@ -25,21 +28,31 @@ function outd_custom_menu()
         'Outdoor',
         'manage_options',
         'outdoor',
-        'outd_render_page',
+        'outd_main_page',
         'dashicons-desktop',
         10
     );
-/*
+
     add_submenu_page(
         'outdoor',
         'Visualizar',
         'Visualizar',
         'manage_options',
         'outdoor_preview',
-        null,
-        10
+        'outd_preview_page',
+        20
     );
-*/
+
+    add_submenu_page(
+        'outdoor',
+        'Configurações',
+        'Configurações',
+        'manage_options',
+        'outdoor_settings',
+        'outd_settings_page',
+        30
+    );
+
     add_action("load-$outd_sample_page", "outd_sample_screen_options");
 }
 
@@ -68,9 +81,13 @@ function outd_sample_screen_options()
 
 }
 
-function outd_render_page()
+function outd_main_page()
 {
     global $wpdb;
+
+    if (!current_user_can('manage_options')) {
+        return;
+    }
 
     $table = new Outd_List_Table();
     $url = get_admin_url() . 'admin.php';
@@ -100,45 +117,117 @@ function outd_render_page()
     $qt_active = $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE outdoor_status = 'active'");
     $qt_inactive = $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE outdoor_status = 'inactive'");
     $qt = $qt_active + $qt_inactive;
+
+    require_once OUTD_DIR_PAGES . 'main.php';
+}
+
+function outd_preview_page()
+{
+    global $wpdb;
+    
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+
+    require_once OUTD_DIR_PAGES . 'preview.php';
+}
+
+function outd_settings_page()
+{
+    global $wpdb;
+
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+
+    if (isset($_GET['settings-updated'])) {
+        add_settings_error('outd_options', 'outd_message', 'Configurações salvas com sucesso!', 'success');
+    }
+
+    settings_errors('outd_options');
+
+    require_once OUTD_DIR_PAGES . 'settings.php';
+}
+
+function outd_register_shortcodes()
+{
+    add_shortcode('outdoor', 'outd_add_shortcode');
+    function outd_add_shortcode()
+    {
+        global $wpdb;
+
+        ob_start();
+        require_once OUTD_DIR . 'view.php';
+        return ob_get_clean();
+    }
+}
+
+function outd_register_settings()
+{
+    register_setting('outd_group', 'outdoor_options', 'outd_validate');
+
+    add_settings_section(
+        'outd_main_section',
+        'Como usar o plugin?',
+        null,
+        'outd_page1'
+    );
+
+    add_settings_section(
+        'outd_second_section',
+        'Opções do Plugin',
+        null,
+        'outd_page2'
+    );
+
+    add_settings_field(
+        'outd_shortcode',
+        'Shortcode',
+        'outd_shortcode_callback',
+        'outd_page1',
+        'outd_main_section'
+    );
+
+    add_settings_field(
+        'outd_random',
+        'Ordem aleatória?',
+        'outd_random_callback',
+        'outd_page2',
+        'outd_second_section',
+        array(
+            'label_for' => 'outd_random',
+        )
+    );
+}
+
+function outd_validate($input)
+{
+    $new_input = array();
+    foreach ($input as $key => $value) {
+        $new_input[$key] = sanitize_text_field($value);
+    }
+    return $new_input;
+}
+
+function outd_shortcode_callback($args)
+{
     ?>
-    <div class="wrap">
-        <h1 class="wp-heading-inline">Outdoor</h1>
-        <a class="page-title-action" href='javascript:' onclick='outd_open_media_window()'>Adicionar Mídia</a>
-        <a class="page-title-action" href='<?php echo plugin_dir_url(__FILE__) ?>presentation.php' target='_blank'>Visualizar Outdoor</a>
+    <span>Use o código (shortcode) <b>[outdoor]</b> para exibir o botão de "Iniciar Outdoor" em sua página/post/widget</span>
+    <?php
+}
 
-        <hr class="wp-header-end">
-
-        <ul class="subsubsub">
-            <li class="all">
-                <a href="<?php echo $url . $symbol ?>outdoor_status=all" <?php echo ($status == '' || $status == 'all' ? $current : '') ?>>
-                    Todos <span class="count">(<?php echo $qt ?>)</span>
-                </a> |
-            </li>
-            <li class="active">
-                <a href="<?php echo $url . $symbol ?>outdoor_status=active" <?php echo ($status == 'active' ? $current : '') ?>>
-                    Ativos <span class="count">(<?php echo $qt_active ?>)</span>
-                </a> |
-            </li>
-            <li class="inactive">
-                <a href="<?php echo $url . $symbol ?>outdoor_status=inactive" <?php echo ($status == 'inactive' ? $current : '') ?>>
-                    Desativados <span class="count">(<?php echo $qt_inactive ?>)</span>
-                </a>
-            </li>
-        </ul>
-
-        <form method="post" novalidate>
-            <input type="hidden" name="action_row">
-            <input type="hidden" name="id_row">
-            <input type="hidden" name="field">
-            <input type="hidden" name="value">
-        <?php
-$table->prepare_items();
-    $table->search_box('Buscar', 'search_id');
-    $table->display();
+function outd_random_callback($args)
+{
+    $options = get_option('outdoor_options');
     ?>
-        </form>
-
-    </div>
+        <input
+            type="checkbox"
+            name="outdoor_options[random]"
+            id="outd_random"
+            value="1"
+            <?php if (isset($options['random'])) {checked("1", $options['random'], true);}?>
+        />
+        <label for="random">Se marcado, as mídias seguirão em ordem aleatória.</label>
 
     <?php
 }

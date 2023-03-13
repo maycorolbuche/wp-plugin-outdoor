@@ -25,6 +25,12 @@ class Outd_List_Table extends WP_List_Table
             'outdoor_object_fit' => 'Alinhamento (imagem)',
             'outdoor_duration' => 'Duração (imagem)',
         );
+
+        $options = get_option('outdoor_options');
+        if (isset($options["random"]) && $options["random"] == 1){
+            unset($columns["outdoor_order"]);
+        }
+
         return $columns;
     }
 
@@ -264,8 +270,14 @@ class Outd_List_Table extends WP_List_Table
     // Sorting function
     public function usort_reorder($a, $b)
     {
+        $def_order = 'outdoor_order';
+        $options = get_option('outdoor_options');
+        if (isset($options["random"]) && $options["random"] == 1){
+            $def_order = 'post_title';
+        }
+
         // If no sort, default to user_login
-        $orderby = (!empty($_GET['orderby'])) ? esc_html($_GET['orderby']) : 'outdoor_order';
+        $orderby = (!empty($_GET['orderby'])) ? esc_html($_GET['orderby']) : $def_order;
 
         // If no order, default to asc
         $order = (!empty($_GET['order'])) ? esc_html($_GET['order']) : 'asc';

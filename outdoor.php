@@ -23,7 +23,9 @@ if (!defined('ABSPATH')) {
 define('OUTD_URL', plugins_url('', __FILE__));
 define('OUTD_URL_CSS', OUTD_URL . '/assets/css/');
 define('OUTD_URL_JS', OUTD_URL . '/assets/js/');
+define('OUTD_URL_IMG', OUTD_URL . '/assets/img/');
 define('OUTD_DIR', plugin_dir_path(__FILE__));
+define('OUTD_DIR_PAGES', OUTD_DIR . 'pages/');
 define('OUTD_DIR_CSS', OUTD_DIR . 'assets/css/');
 define('OUTD_DIR_JS', OUTD_DIR . 'assets/js/');
 
@@ -70,8 +72,9 @@ register_uninstall_hook(__FILE__, 'outd_uninstall');
 //register_deactivation_hook(__FILE__, 'outd_uninstall');
 function outd_uninstall()
 {
-
     global $wpdb;
+
+    delete_option('outdoor_options');
 
     $prefix = $wpdb->prefix;
     $table_name = $prefix . 'outdoor';
