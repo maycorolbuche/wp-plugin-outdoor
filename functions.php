@@ -94,20 +94,20 @@ function outd_main_page()
     $symbol = '?';
 
     if (isset($_GET["page"])) {
-        $url = $url . $symbol . 'page=' . esc_html($_GET['page']);
+        $url = $url . $symbol . 'page=' . sanitize_text_field($_GET['page']);
         $symbol = '&';
     }
     if (isset($_GET["orderby"])) {
-        $url = $url . $symbol . 'orderby=' . esc_html($_GET['orderby']);
+        $url = $url . $symbol . 'orderby=' . sanitize_text_field($_GET['orderby']);
         $symbol = '&';
     }
     if (isset($_GET["order"])) {
-        $url = $url . $symbol . 'order=' . esc_html($_GET['order']);
+        $url = $url . $symbol . 'order=' . sanitize_text_field($_GET['order']);
         $symbol = '&';
     }
 
     if (isset($_GET["outdoor_status"]) && $_GET["outdoor_status"] != '') {
-        $status = esc_html($_GET["outdoor_status"]);
+        $status = sanitize_text_field($_GET["outdoor_status"]);
     } else {
         $status = "active";
     }

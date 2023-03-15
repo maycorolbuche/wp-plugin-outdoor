@@ -42,7 +42,7 @@ class Outd_List_Table extends WP_List_Table
         $table_posts = $wpdb->prefix . 'posts';
 
         if (isset($_GET["outdoor_status"]) && $_GET["outdoor_status"] != '') {
-            $status = esc_html($_GET["outdoor_status"]);
+            $status = sanitize_text_field($_GET["outdoor_status"]);
         } else {
             $status = "active";
         }
@@ -83,7 +83,7 @@ class Outd_List_Table extends WP_List_Table
     {
         //data
         if (isset($_POST['s'])) {
-            $this->table_data = $this->get_table_data(esc_html($_POST['s']));
+            $this->table_data = $this->get_table_data(sanitize_text_field($_POST['s']));
         } else {
             $this->table_data = $this->get_table_data();
         }
@@ -277,10 +277,10 @@ class Outd_List_Table extends WP_List_Table
         }
 
         // If no sort, default to user_login
-        $orderby = (!empty($_GET['orderby'])) ? esc_html($_GET['orderby']) : $def_order;
+        $orderby = (!empty($_GET['orderby'])) ? sanitize_text_field($_GET['orderby']) : $def_order;
 
         // If no order, default to asc
-        $order = (!empty($_GET['order'])) ? esc_html($_GET['order']) : 'asc';
+        $order = (!empty($_GET['order'])) ? sanitize_text_field($_GET['order']) : 'asc';
 
         // Determine sort order
         $result = strcmp($a[$orderby], $b[$orderby]);
@@ -297,23 +297,23 @@ class Outd_List_Table extends WP_List_Table
         $symbol = '?';
 
         if (isset($_GET["page"])) {
-            $url = $url . $symbol . 'page=' . esc_html($_GET['page']);
+            $url = $url . $symbol . 'page=' . sanitize_text_field($_GET['page']);
             $symbol = '&';
         }
         if (isset($_GET["orderby"])) {
-            $url = $url . $symbol . 'orderby=' . esc_html($_GET['orderby']);
+            $url = $url . $symbol . 'orderby=' . sanitize_text_field($_GET['orderby']);
             $symbol = '&';
         }
         if (isset($_GET["order"])) {
-            $url = $url . $symbol . 'order=' . esc_html($_GET['order']);
+            $url = $url . $symbol . 'order=' . sanitize_text_field($_GET['order']);
             $symbol = '&';
         }
         if (isset($_GET["paged"])) {
-            $url = $url . $symbol . 'paged=' . esc_html($_GET['paged']);
+            $url = $url . $symbol . 'paged=' . sanitize_text_field($_GET['paged']);
             $symbol = '&';
         }
         if (isset($_GET["outdoor_status"]) && $_GET["outdoor_status"] != '') {
-            $url = $url . $symbol . 'outdoor_status=' . esc_html($_GET['outdoor_status']);
+            $url = $url . $symbol . 'outdoor_status=' . sanitize_text_field($_GET['outdoor_status']);
             $symbol = '&';
         }
 
@@ -354,7 +354,7 @@ class Outd_List_Table extends WP_List_Table
     {
         $mode = get_user_setting('posts_list_mode', 'list');
 
-        $mode_class = esc_attr('table-view-' . $mode);
+        $mode_class = sanitize_text_field('table-view-' . $mode);
 
         return array('widefat', 'fixed', 'plugins', 'outdoor-table', $mode_class, $this->_args['plural']);
     }
