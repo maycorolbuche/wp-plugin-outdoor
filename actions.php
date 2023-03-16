@@ -10,23 +10,23 @@ $outd_url = get_admin_url() . 'admin.php';
 $oud_symbol = '?';
 
 if (isset($_GET["page"])) {
-    $outd_url = $outd_url . $oud_symbol . 'page=' . esc_html($_GET['page']);
+    $outd_url = $outd_url . $oud_symbol . 'page=' . sanitize_text_field($_GET['page']);
     $oud_symbol = '&';
 }
 if (isset($_GET["orderby"])) {
-    $outd_url = $outd_url . $oud_symbol . 'orderby=' . esc_html($_GET['orderby']);
+    $outd_url = $outd_url . $oud_symbol . 'orderby=' . sanitize_text_field($_GET['orderby']);
     $oud_symbol = '&';
 }
 if (isset($_GET["order"])) {
-    $outd_url = $outd_url . $oud_symbol . 'order=' . esc_html($_GET['order']);
+    $outd_url = $outd_url . $oud_symbol . 'order=' . sanitize_text_field($_GET['order']);
     $oud_symbol = '&';
 }
 if (isset($_GET["paged"])) {
-    $outd_url = $outd_url . $oud_symbol . 'paged=' . esc_html($_GET['paged']);
+    $outd_url = $outd_url . $oud_symbol . 'paged=' . sanitize_text_field($_GET['paged']);
     $oud_symbol = '&';
 }
 if (isset($_GET["outdoor_status"])) {
-    $outd_url = $outd_url . $oud_symbol . 'outdoor_status=' . esc_html($_GET['outdoor_status']);
+    $outd_url = $outd_url . $oud_symbol . 'outdoor_status=' . sanitize_text_field($_GET['outdoor_status']);
     $oud_symbol = '&';
 }
 
