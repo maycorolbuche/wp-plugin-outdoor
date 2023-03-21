@@ -8,17 +8,17 @@
     <ul class="subsubsub">
         <li class="all">
             <a href="<?php echo esc_html($url . $symbol) ?>outdoor_status=all" <?php echo ($status == '' || $status == 'all' ? esc_html($current) : '') ?>>
-                Todos <span class="count">(<?php echo $qt ?>)</span>
+                Todos <span class="count">(<?php echo esc_html($qt) ?>)</span>
             </a> |
         </li>
         <li class="active">
             <a href="<?php echo esc_html($url . $symbol) ?>outdoor_status=active" <?php echo ($status == 'active' ? esc_html($current) : '') ?>>
-                Ativos <span class="count">(<?php echo $qt_active ?>)</span>
+                Ativos <span class="count">(<?php echo esc_html($qt_active) ?>)</span>
             </a> |
         </li>
         <li class="inactive">
             <a href="<?php echo esc_html($url . $symbol) ?>outdoor_status=inactive" <?php echo ($status == 'inactive' ? esc_html($current) : '') ?>>
-                Desativados <span class="count">(<?php echo $qt_inactive ?>)</span>
+                Desativados <span class="count">(<?php echo esc_html($qt_inactive) ?>)</span>
             </a>
         </li>
     </ul>

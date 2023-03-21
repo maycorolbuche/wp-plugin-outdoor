@@ -345,7 +345,7 @@ class Outd_List_Table extends WP_List_Table
 
     public function single_row($item)
     {
-        echo '<tr class="' . $item['outdoor_status'] . '" id="outd_row_' . $item['outdoor_id'] . '">';
+        echo '<tr class="' . esc_html($item['outdoor_status']) . '" id="outd_row_' . esc_html($item['outdoor_id']) . '">';
         $this->single_row_columns($item);
         echo '</tr>';
     }
