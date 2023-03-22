@@ -30,6 +30,9 @@ class Outd_List_Table extends WP_List_Table
         if (isset($options["random"]) && $options["random"] == 1){
             unset($columns["outdoor_order"]);
         }
+        if (!isset($options["thumb"]) || $options["thumb"] != 1){
+            unset($columns["media"]);
+        }
 
         return $columns;
     }

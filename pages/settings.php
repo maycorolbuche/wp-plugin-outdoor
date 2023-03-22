@@ -5,6 +5,7 @@
         settings_fields( 'outd_group' );
         do_settings_sections( 'outd_page1' );
         do_settings_sections( 'outd_page2' );
+        do_settings_sections( 'outd_page3' );
         submit_button( 'Salvar Configurações' );
     ?>
     </form>

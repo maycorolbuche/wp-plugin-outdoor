@@ -124,7 +124,7 @@ function outd_main_page()
 function outd_preview_page()
 {
     global $wpdb;
-    
+
     if (!current_user_can('manage_options')) {
         return;
     }
@@ -173,13 +173,6 @@ function outd_register_settings()
         'outd_page1'
     );
 
-    add_settings_section(
-        'outd_second_section',
-        'Opções do Plugin',
-        null,
-        'outd_page2'
-    );
-
     add_settings_field(
         'outd_shortcode',
         'Shortcode',
@@ -188,14 +181,39 @@ function outd_register_settings()
         'outd_main_section'
     );
 
+    add_settings_section(
+        'outd_2nd_section',
+        'Opções do Plugin',
+        null,
+        'outd_page2'
+    );
+
     add_settings_field(
         'outd_random',
         'Ordem aleatória?',
         'outd_random_callback',
         'outd_page2',
-        'outd_second_section',
+        'outd_2nd_section',
         array(
             'label_for' => 'outd_random',
+        )
+    );
+
+    add_settings_section(
+        'outd_3rd_section',
+        'Opções da Tabela',
+        null,
+        'outd_page3'
+    );
+
+    add_settings_field(
+        'outd_tb_thumb',
+        'Exibir miniatura?',
+        'outd_tb_thumb_callback',
+        'outd_page3',
+        'outd_3rd_section',
+        array(
+            'label_for' => 'outd_tb_thumb',
         )
     );
 }
@@ -228,6 +246,27 @@ function outd_random_callback($args)
             <?php if (isset($options['random'])) {checked("1", $options['random'], true);}?>
         />
         <label for="random">Se marcado, as mídias seguirão em ordem aleatória.</label>
+
+    <?php
+}
+
+function outd_tb_thumb_callback($args)
+{
+    $options = get_option('outdoor_options');
+    ?>
+        <input
+            type="checkbox"
+            name="outdoor_options[thumb]"
+            id="outd_tb_thumb"
+            value="1"
+            <?php if (isset($options['thumb'])) {checked("1", $options['thumb'], true);}?>
+        />
+        <label for="thumb">
+            Se marcado, a tabela exibirá uma coluna com a miniatura do vídeo/imagem.
+            <br>
+            <small><i>(Pode causar perda de desempenho)</i></small>
+
+        </label>
 
     <?php
 }
