@@ -111,10 +111,12 @@ if (isset($_REQUEST["action"]) && $_REQUEST["action"] == 'delete') {
     }
 
     foreach ($ids as $id) {
-        $wpdb->delete($outd_table_name,
+        $wpdb->delete(
+            $outd_table_name,
             array(
                 'outdoor_id' => $id,
-            )
+            ),
+            array('%d')
         );
     }
 
