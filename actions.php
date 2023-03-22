@@ -38,13 +38,16 @@ function outd_adjust_lines()
     $result = $wpdb->get_results(" SELECT outdoor_id FROM  $outd_table_name ORDER BY outdoor_status,outdoor_order ");
 
     foreach ($result as $order => $page) {
-        $wpdb->update($outd_table_name,
+        $wpdb->update(
+            $outd_table_name,
             array(
                 'outdoor_order' => $order + 1,
             ),
             array(
                 'outdoor_id' => $page->outdoor_id,
-            )
+            ),
+            array('%d'),
+            array('%d')
         );
     }
 
@@ -82,15 +85,14 @@ if (isset($_POST["outd_add_media"])) {
 
     foreach ($ids as $order => $id) {
         if ($id > 0) {
-            $wpdb->insert($outd_table_name,
+            $wpdb->insert(
+                $outd_table_name,
                 array(
                     'post_id' => absint($id),
                     'outdoor_status' => 'active',
                     'outdoor_order' => absint($order),
                 ),
-                array(
-                    '%d', '%s', '%d',
-                )
+                array('%d', '%s', '%d')
             );
         }
     }
@@ -133,13 +135,16 @@ if (isset($_REQUEST["action"]) && ($_REQUEST["action"] == 'active' || $_REQUEST[
     }
 
     foreach ($ids as $id) {
-        $wpdb->update($outd_table_name,
+        $wpdb->update(
+            $outd_table_name,
             array(
                 'outdoor_status' => sanitize_text_field($_REQUEST["action"]),
             ),
             array(
                 'outdoor_id' => $id,
-            )
+            ),
+            array('%s'),
+            array('%d')
         );
     }
 
