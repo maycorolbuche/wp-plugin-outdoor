@@ -4,6 +4,7 @@ if (!defined('ABSPATH')) {
     die('-1');
 }
 
+global $wpdb;
 $outd_table_name = $wpdb->prefix . 'outdoor';
 
 $outd_url = get_admin_url() . 'admin.php';

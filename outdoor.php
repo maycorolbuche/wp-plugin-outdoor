@@ -5,7 +5,7 @@
  */
 /*
 Plugin Name: Outdoor
-Plugin URI: 
+Plugin URI:
 Description: Projetar vídeos e imagens em looping de forma dinâmica.
 Version: 0.1.2
 Requires at least: 5.0
@@ -37,33 +37,33 @@ function outd_activate()
     $prefix = $wpdb->prefix;
     $table_name = $prefix . 'outdoor';
     $charset_collate = $wpdb->get_charset_collate();
+    $db_version = get_option('outdoor_db_version');
 
-    $check_table = $wpdb->get_results("SHOW TABLES LIKE '{$table_name}';");
-    if (empty($check_table)) {
+    if (empty($db_version)) {
 
-        $sql = "CREATE TABLE $table_name (
-            outdoor_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            post_id BIGINT(20) UNSIGNED NOT NULL,
-            outdoor_status ENUM('active','inactive') NOT NULL DEFAULT 'active',
-            outdoor_order INT(10) NOT NULL DEFAULT '0',
-            outdoor_start_date DATE NULL DEFAULT NULL,
-            outdoor_end_date DATE NULL DEFAULT NULL,
-            outdoor_object_fit ENUM('contain','cover','fill') NOT NULL DEFAULT 'cover',
-            outdoor_duration INT(10) NOT NULL DEFAULT '10',
-            outdoor_options LONGTEXT NULL,
-            PRIMARY KEY (`outdoor_id`),
-            INDEX `FK_{$table_name}_{$prefix}posts` (`post_id`),
-            CONSTRAINT `FK_{$table_name}_{$prefix}posts` FOREIGN KEY (`post_id`) REFERENCES `{$prefix}posts` (`ID`) ON UPDATE CASCADE ON DELETE CASCADE
-        ) $charset_collate;";
+        $sql = "
+            CREATE TABLE $table_name (
+                outdoor_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                post_id BIGINT(20) UNSIGNED NOT NULL,
+                outdoor_status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+                outdoor_order INT(10) NOT NULL DEFAULT '0',
+                outdoor_start_date DATE NULL DEFAULT NULL,
+                outdoor_end_date DATE NULL DEFAULT NULL,
+                outdoor_object_fit ENUM('contain','cover','fill') NOT NULL DEFAULT 'cover',
+                outdoor_duration INT(10) NOT NULL DEFAULT '10',
+                outdoor_options LONGTEXT NULL,
+                PRIMARY KEY (`outdoor_id`),
+                INDEX `FK_{$table_name}_{$prefix}posts` (`post_id`),
+                CONSTRAINT `FK_{$table_name}_{$prefix}posts` FOREIGN KEY (`post_id`) REFERENCES `{$prefix}posts` (`ID`) ON UPDATE CASCADE ON DELETE CASCADE
+            ) $charset_collate;
+        ";
 
-    }
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta($sql);
 
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-    dbDelta($sql);
+        $db_version = '1.0';
+        add_option('outdoor_db_version', $db_version);
 
-    $check_table = $wpdb->get_results("SHOW TABLES LIKE '{$table_name}';");
-    if (empty($check_table)) {
-        die("Não foi possível criar tabela no banco de dados!");
     }
 
 }
@@ -75,6 +75,7 @@ function outd_uninstall()
     global $wpdb;
 
     delete_option('outdoor_options');
+    delete_option('outdoor_db_version');
 
     $prefix = $wpdb->prefix;
     $table_name = $prefix . 'outdoor';
