@@ -52,20 +52,22 @@ function outd_adjust_lines()
 
 if (isset($_POST["action_row"]) && $_POST["action_row"] == 'edit') {
 
-    $_field = sanitize_text_field($_POST["field"]);
-    $_value = sanitize_text_field($_POST["value"]);
-    $_id = sanitize_text_field($_POST["id_row"]);
+    $outd_field = sanitize_text_field($_POST["field"]);
+    $outd_value = sanitize_text_field($_POST["value"]);
+    $outd_id = sanitize_text_field($_POST["id_row"]);
 
-    if ($_field == "outdoor_order") {
-        $result = $wpdb->get_results(" SELECT outdoor_id,outdoor_order FROM  $outd_table_name WHERE outdoor_id = " . $_id);
-        if ($result[0]->outdoor_order < $_value) {
-            $_value += 1;
+    if ($outd_field == "outdoor_order") {
+        $result = $wpdb->get_results(
+            $wpdb->prepare("SELECT outdoor_id,outdoor_order FROM  $outd_table_name WHERE outdoor_id = %d", $outd_id)
+        );
+        if ($result[0]->outdoor_order < $outd_value) {
+            $outd_value += 1;
         }
 
-        $wpdb->query("UPDATE $outd_table_name SET outdoor_order = outdoor_order + 1 WHERE outdoor_order >= $_value");
+        $wpdb->query("UPDATE $outd_table_name SET outdoor_order = outdoor_order + 1 WHERE outdoor_order >= $outd_value");
     }
 
-    $wpdb->query("UPDATE $outd_table_name SET $_field = '$_value' WHERE outdoor_id = $_id");
+    $wpdb->query("UPDATE $outd_table_name SET $outd_field = '$outd_value' WHERE outdoor_id = $outd_id");
 
     outd_adjust_lines();
     header('Location: ' . $outd_url);
@@ -85,6 +87,9 @@ if (isset($_POST["outd_add_media"])) {
                     'post_id' => absint($id),
                     'outdoor_status' => 'active',
                     'outdoor_order' => absint($order),
+                ),
+                array(
+                    '%d', '%s', '%d',
                 )
             );
         }
