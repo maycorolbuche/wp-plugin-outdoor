@@ -136,7 +136,7 @@ class Outd_List_Table extends WP_List_Table
                         ";
                         break;
                 }
-                return $embed;
+                return "<a href='$url' target='_blank'>$embed</a>";
             case 'outdoor_status':
                 $cl = '';
                 if ($item['outdoor_status'] == 'active') {
@@ -330,7 +330,7 @@ class Outd_List_Table extends WP_List_Table
         }
         $actions['delete'] = sprintf('<a href="javascript:" onclick="outd_delete(this)" data-href="%saction=%s&element=%s">%s</a>', $url, 'delete', $item['outdoor_id'], 'Apagar');
 
-        return sprintf('%1$s %2$s', $item['post_title'], $this->row_actions($actions));
+        return sprintf('%1$s %2$s', '<a href="'.$item['guid'].'" target="_blank">'.$item['post_title'].'</a>', $this->row_actions($actions));
     }
 
     // To show bulk action dropdown
