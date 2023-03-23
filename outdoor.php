@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Outdoor
- * @version 0.1.2
+ * @version 1.0.0
  */
 /*
 Plugin Name: Outdoor
-Plugin URI:
+Plugin URI: https://wordpress.org/plugins/outdoor/
 Description: Projetar vídeos e imagens em looping de forma dinâmica.
-Version: 0.1.2
+Version: 1.0.0
 Requires at least: 5.0
 Requires PHP: 7.0
 Author: Mayco Rolbuche
