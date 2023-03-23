@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-== Descrição ==
+== Description ==
 
 Este plugin serve para projetar imagens e vídeos na tela de forma dinâmica.
 
