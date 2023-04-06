@@ -155,3 +155,10 @@ if (isset($_REQUEST["action"]) && ($_REQUEST["action"] == 'active' || $_REQUEST[
     header('Location: ' . $outd_url);
     exit;
 }
+
+
+if (isset($_REQUEST["action"]) && $_REQUEST["action"] == 'reinstall') {
+    outd_sql_create_outdoor_table();
+    header('Location: ' . $outd_url);
+    exit;
+}

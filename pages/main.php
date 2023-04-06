@@ -2,8 +2,11 @@
     <h1 class="wp-heading-inline"><?php echo esc_html(get_admin_page_title()); ?></h1>
     <a class="page-title-action" href='javascript:' onclick='outd_open_media_window()'>Adicionar Mídia</a>
     <a class="page-title-action" href='?page=outdoor_preview'>Visualizar Outdoor</a>
-
     <hr class="wp-header-end">
+
+    <?php
+    outd_check_errors( 'outd_group' );
+    ?>
 
     <ul class="subsubsub">
         <li class="all">

@@ -270,3 +270,17 @@ function outd_tb_thumb_callback($args)
 
     <?php
 }
+
+function outd_check_errors()
+{
+    global $wpdb;
+
+    $outd_table_name = $wpdb->prefix . 'outdoor';
+
+    $result = $wpdb->get_results("SHOW TABLES LIKE '$outd_table_name'");
+    if (count($result) <= 0) {
+        $url = get_admin_url() . 'admin.php?page=' . sanitize_text_field($_GET['page']) . '&action=reinstall';
+        add_settings_error('outd_err', 'outd_message', 'Houve uma falha na instalação deste plugin. <a href="' . esc_html($url) . '">Clique aqui</a> para tentar corrigir o problema!', 'error');
+        settings_errors('outd_err');
+    }
+}

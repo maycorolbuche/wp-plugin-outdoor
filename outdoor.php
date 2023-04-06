@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Outdoor
- * @version 1.1.0
+ * @version 1.2.0
  */
 /*
 Plugin Name: Outdoor
 Plugin URI: https://wordpress.org/plugins/outdoor/
 Description: Projetar vídeos e imagens em looping de forma dinâmica.
-Version: 1.1.0
+Version: 1.2.0
 Requires at least: 5.0
 Requires PHP: 7.0
 Author: Mayco Rolbuche
@@ -30,18 +30,21 @@ define('OUTD_DIR_CSS', OUTD_DIR . 'assets/css/');
 define('OUTD_DIR_JS', OUTD_DIR . 'assets/js/');
 
 register_activation_hook(__FILE__, 'outd_activate');
-function outd_activate()
+
+function outd_sql_create_outdoor_table()
 {
     global $wpdb;
 
     $prefix = $wpdb->prefix;
     $table_name = $prefix . 'outdoor';
     $charset_collate = $wpdb->get_charset_collate();
-    $db_version = get_option('outdoor_db_version');
 
-    if (empty($db_version)) {
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-        $sql = "
+    $sql = "DROP TABLE IF EXISTS {$table_name}";
+    $wpdb->query($sql);
+
+    $sql = "
             CREATE TABLE $table_name (
                 outdoor_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                 post_id BIGINT(20) UNSIGNED NOT NULL,
@@ -57,13 +60,19 @@ function outd_activate()
                 CONSTRAINT `FK_{$table_name}_{$prefix}posts` FOREIGN KEY (`post_id`) REFERENCES `{$prefix}posts` (`ID`) ON UPDATE CASCADE ON DELETE CASCADE
             ) $charset_collate;
         ";
+    dbDelta($sql);
 
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql);
+    $db_version = '1.0';
+    add_option('outdoor_db_version', $db_version);
 
-        $db_version = '1.0';
-        add_option('outdoor_db_version', $db_version);
+}
 
+function outd_activate()
+{
+    $db_version = get_option('outdoor_db_version');
+
+    if (empty($db_version)) {
+        outd_sql_create_outdoor_table();
     }
 
 }
