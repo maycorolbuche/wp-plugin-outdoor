@@ -3,8 +3,8 @@ Contributors: maycorolbuche1
 Donate link: https://maycorolbuche.com.br/
 Tags: video, image, outdoor
 Requires at least: 5.0
-Tested up to: 6.1
-Stable tag: 1.2.0
+Tested up to: 6.2
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,6 +18,10 @@ Este plugin serve para projetar imagens e vídeos na tela de forma dinâmica.
 2. Projete o outdoor na tela para fazer a divulgação de seus projetos e eventos
 
 == Changelog ==
+
+= 1.3.0 =
+
+Ajuste interno do banco de dados.
 
 = 1.2.0 =
 

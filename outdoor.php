@@ -1,13 +1,13 @@
 <?php
 /**
  * @package Outdoor
- * @version 1.2.0
+ * @version 1.3.0
  */
 /*
 Plugin Name: Outdoor
 Plugin URI: https://wordpress.org/plugins/outdoor/
 Description: Projetar vídeos e imagens em looping de forma dinâmica.
-Version: 1.2.0
+Version: 1.3.0
 Requires at least: 5.0
 Requires PHP: 7.0
 Author: Mayco Rolbuche
@@ -43,28 +43,50 @@ function outd_sql_create_outdoor_table()
 
     $sql = "DROP TABLE IF EXISTS {$table_name}";
     $wpdb->query($sql);
+    $dh = date("YmdHis");
+
+    $fields = "
+        outdoor_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        post_id BIGINT(20) UNSIGNED NOT NULL,
+        outdoor_status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+        outdoor_order INT(10) NOT NULL DEFAULT '0',
+        outdoor_start_date DATE NULL DEFAULT NULL,
+        outdoor_end_date DATE NULL DEFAULT NULL,
+        outdoor_object_fit ENUM('contain','cover','fill') NOT NULL DEFAULT 'cover',
+        outdoor_duration INT(10) NOT NULL DEFAULT '10',
+        outdoor_options LONGTEXT NULL,
+        PRIMARY KEY (`outdoor_id`)
+    ";
 
     $sql = "
             CREATE TABLE $table_name (
-                outdoor_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-                post_id BIGINT(20) UNSIGNED NOT NULL,
-                outdoor_status ENUM('active','inactive') NOT NULL DEFAULT 'active',
-                outdoor_order INT(10) NOT NULL DEFAULT '0',
-                outdoor_start_date DATE NULL DEFAULT NULL,
-                outdoor_end_date DATE NULL DEFAULT NULL,
-                outdoor_object_fit ENUM('contain','cover','fill') NOT NULL DEFAULT 'cover',
-                outdoor_duration INT(10) NOT NULL DEFAULT '10',
-                outdoor_options LONGTEXT NULL,
-                PRIMARY KEY (`outdoor_id`),
-                INDEX `FK_{$table_name}_{$prefix}posts` (`post_id`),
-                CONSTRAINT `FK_{$table_name}_{$prefix}posts` FOREIGN KEY (`post_id`) REFERENCES `{$prefix}posts` (`ID`) ON UPDATE CASCADE ON DELETE CASCADE
+                {$fields},
+                INDEX `FK_{$table_name}_{$prefix}posts_{$dh}` (`post_id`),
+                CONSTRAINT `FK_{$table_name}_{$prefix}posts_{$dh}` FOREIGN KEY (`post_id`) REFERENCES `{$prefix}posts` (`ID`) ON UPDATE CASCADE ON DELETE CASCADE
             ) $charset_collate;
         ";
     dbDelta($sql);
 
+    if (!empty($wpdb->last_error)){
+        //Ocorreu erro na instalação. Tentando sem as chaves
+        $sql = "
+                CREATE TABLE $table_name (
+                    {$fields}
+                ) $charset_collate;
+            ";
+        dbDelta($sql);
+    }
+
     $db_version = '1.0';
     add_option('outdoor_db_version', $db_version);
 
+    if (!empty($wpdb->last_error)){
+        add_settings_error('outd_err', 'outd_message', $wpdb->last_error, 'error');
+        settings_errors('outd_err');
+        return false;
+    }else{
+        return true;
+    }
 }
 
 function outd_activate()
