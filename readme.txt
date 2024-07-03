@@ -19,6 +19,10 @@ Este plugin serve para projetar imagens e vídeos na tela de forma dinâmica.
 
 == Changelog ==
 
+= 1.3.1 =
+
+Atualização para a versão 6.6 do wordpress.
+
 = 1.3.0 =
 
 Ajuste interno do banco de dados.
